@@ -17,6 +17,7 @@ from visualization_msgs.msg import Marker
 from geometry_msgs.msg import Point, Pose, PoseStamped, PoseArray, Quaternion, PolygonStamped,Polygon, Point32, PoseWithCovarianceStamped, PointStamped
 from nav_msgs.msg import Odometry
 from nav_msgs.srv import GetMap
+from multi_car_msgs.msg import LidarPose
 
 # visualization packages
 import matplotlib.pyplot as plt
@@ -39,6 +40,8 @@ class ParticleFiler():
     '''
 
     def __init__(self):
+        self.frame_id = rospy.get_param("~car_frame_id", "car0")
+
         # parameters
         self.ANGLE_STEP        = int(rospy.get_param("~angle_step"))
         self.MAX_PARTICLES     = int(rospy.get_param("~max_particles"))
@@ -104,6 +107,7 @@ class ParticleFiler():
         self.precompute_sensor_model()
         self.initialize_global()
 
+        self.lidar_pose_pub = rospy.Publisher("/lidar_pose", LidarPose, queue_size=1)
         # these topics are for visualization
         self.pose_pub      = rospy.Publisher("/pf/viz/inferred_pose", PoseStamped, queue_size = 1)
         self.particle_pub  = rospy.Publisher("/pf/viz/particles", PoseArray, queue_size = 1)
@@ -172,6 +176,15 @@ class ParticleFiler():
         # this may cause issues with the TF tree. If so, see the below code.
         self.pub_tf.sendTransform((pose[0],pose[1],0),tf.transformations.quaternion_from_euler(0, 0, pose[2]), 
                stamp , "/laser", "/map")
+
+        lp = LidarPose()
+        lp.header.frame_id = "/map"
+        lp.header.stamp = stamp
+        lp.state = pose[:3]
+        lp.cov = np.cov(self.particles.T).flatten().tolist()
+        lp.car_id = int(self.frame_id[-1])
+
+        self.lidar_pose_pub(lp)
 
         # also publish odometry to facilitate getting the localization pose
         if self.PUBLISH_ODOM:

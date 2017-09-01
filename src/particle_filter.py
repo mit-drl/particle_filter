@@ -180,7 +180,9 @@ class ParticleFiler():
         lp = LidarPose()
         lp.header.frame_id = "/map"
         lp.header.stamp = stamp
-        lp.state = pose[:3]
+        lp.x = pose[0]
+        lp.y = pose[1]
+        lp.theta = pose[2]
         lp.cov = np.cov(self.particles.T).flatten().tolist()
         lp.car_id = int(self.frame_id[-1])
 

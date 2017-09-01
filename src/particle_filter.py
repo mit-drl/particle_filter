@@ -184,7 +184,7 @@ class ParticleFiler():
         lp.cov = np.cov(self.particles.T).flatten().tolist()
         lp.car_id = int(self.frame_id[-1])
 
-        self.lidar_pose_pub(lp)
+        self.lidar_pose_pub.publish(lp)
 
         # also publish odometry to facilitate getting the localization pose
         if self.PUBLISH_ODOM:

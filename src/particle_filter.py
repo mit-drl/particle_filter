@@ -34,7 +34,7 @@ VAR_REPEAT_ANGLES_EVAL_SENSOR = 2
 VAR_REPEAT_ANGLES_EVAL_SENSOR_ONE_SHOT = 3
 VAR_RADIAL_CDDT_OPTIMIZATIONS = 4
 
-class ParticleFiler():
+class ParticleFilter():
     '''
     This class implements Monte Carlo Localization based on odometry and a laser scanner.
     '''
@@ -691,5 +691,5 @@ if __name__=="__main__":
 
     # make_flamegraph(r"update")
 
-    pf = ParticleFiler()
+    pf = ParticleFilter()
     rospy.spin()

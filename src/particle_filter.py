@@ -40,9 +40,9 @@ class ParticleFiler():
 
     def __init__(self):
         # parameters
-        self.localization_frame = str(rospy.get_param("~localization_frame"))
-        self.map_frame         = str(rospy.get_param("~map_frame"))
-        self.base_link_frame   = str(rospy.get_param("~base_link_frame"))
+        self.localization_frame = str(rospy.get_param("~localization_frame", "laser"))
+        self.map_frame         = str(rospy.get_param("~map_frame", "map"))
+        self.base_link_frame   = str(rospy.get_param("~base_link_frame", "base_link"))
 
         self.ANGLE_STEP        = int(rospy.get_param("~angle_step"))
         self.MAX_PARTICLES     = int(rospy.get_param("~max_particles"))
